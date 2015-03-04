@@ -2,8 +2,10 @@
   "name": "bing-app",
   "version": "0.0.0",
   "dependencies": {
+    "body-parser": "^1.12.0",
     "ejs": "^2.3.1",
     "express": "^4.12.0",
+    "mongoose": "^3.8.23",
     "node-bing-api": "^0.1.7",
     "odata-parser": "^1.2.0",
     "superagent": "^0.21.0",
