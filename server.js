@@ -8,6 +8,10 @@ var superagent = require('superagent');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
+mongoose.connect('mongodb://south:south@ds027718.mongolab.com:27718/crmdb');
+
+var Query = require('./app/models/query.js');
+
 //Views
 app.set("view engine", 'ejs');
 
@@ -26,7 +30,7 @@ var request = require('request').defaults({
 });
 
 console.log(auth);
-
+console.log(Query);
 //Set up where to get Files
 app.use(express.static(path.join(__dirname, '/views')));
 app.use(express.static(__dirname + '/app'));
@@ -44,17 +48,32 @@ superagent.get("https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=%27cat
   .end(function(res){
     if (res.ok){
       queryArray = JSON.stringify(res.body.d.results);
+      console.log(queryArray);
     }
     else{
       console.log('error');
     }
   });
 
+// route middleware that will happen on every request
+router.use(function(req, res, next) {
+
+    // log each request to the console
+    console.log(req.method, req.url);
+
+    // continue doing what we were doing and go to the route
+    next();
+  });
+
+
+
 //Set up route for opening page
 router.route('/')
     .get(function(req, res){
         response.status(200).render("index.html");
     });
+
+
 
 app.use(router);
 var port = process.env.PORT || 8080;
