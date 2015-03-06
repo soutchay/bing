@@ -16,8 +16,13 @@
         <input value="Search Here"></input>
         <input type="submit" ng-click="searchBing()">
       </div>
-
+    
       <div ng-view=""></div>
+
+    </div>
+    <div ng-repeat="result in searched[0].results">
+        <div>{{result['Title']}}</div>
+        <a href="{{result['Url']}}"><div>{{result['Description']}}</div></a>
 
     </div>
 

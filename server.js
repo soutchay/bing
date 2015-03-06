@@ -12,6 +12,8 @@ mongoose.connect('mongodb://south:south@ds027718.mongolab.com:27718/crmdb');
 
 var Query = require('./app/models/query.js');
 
+
+
 //Views
 app.set("view engine", 'ejs');
 
@@ -29,8 +31,8 @@ var request = require('request').defaults({
   }
 });
 
-console.log(auth);
-console.log(Query);
+// console.log(auth);
+// console.log(Query);
 //Set up where to get Files
 app.use(express.static(path.join(__dirname, '/views')));
 app.use(express.static(__dirname + '/app'));
@@ -41,19 +43,30 @@ app.use(express.static(__dirname + '/bower_components'));
 var queryArray = [];
 //hard coded query
 var query = "'cats'";
-superagent.get("https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=%27cats%27&$format=json")
+//"https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=%27cats%27&$format=json"
+superagent.get("https://api.datamarket.azure.com/Bing/Search/v1/Web?")
   .query({Query: query})
   .query({$format: "json"})
-  .set('Authorization', 'Basic OmhLQTBmaTMzaVlGVnhZNGJxYUFFNkVPdHNqV3Q5VWx1dTU1NlpwZFU5U2M=')
+  // .set('Authorization', 'Basic OmhLQTBmaTMzaVlGVnhZNGJxYUFFNkVPdHNqV3Q5VWx1dTU1NlpwZFU5U2M=')
   .end(function(res){
     if (res.ok){
-      queryArray = JSON.stringify(res.body.d.results);
-      console.log(queryArray);
+      queryArray = res.body.d.results;
+      var search = new Query();
+      search.query = query;
+      search.results = queryArray;
+      search.save();
+      console.log(search);
     }
     else{
       console.log('error');
     }
   });
+
+
+var bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=" + query + "&$format=json";
+
+
+
 
 // route middleware that will happen on every request
 router.use(function(req, res, next) {
@@ -71,10 +84,26 @@ router.use(function(req, res, next) {
 router.route('/')
     .get(function(req, res){
         response.status(200).render("index.html");
+        Query.find(function(error, data){
+          if(error){console.log('error');}
+          res.status(200).json(data);
+        });
     });
 
+//Route for API endpoint
+var apiRouter = express.Router();
+
+apiRouter.route('/')
+  .get(function(req, res){
+    Query.find(function(error, data){
+      if(error){console.log('error');}
+      res.json(data);
+    });
+  });
 
 
+
+app.use('/api', apiRouter);
 app.use(router);
 var port = process.env.PORT || 8080;
 app.listen(port);
