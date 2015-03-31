@@ -13,16 +13,17 @@
           <li><a ng-href="#/saved">Saved Searches</a></li>
         </ul>
         <h3 class="text-muted">Search Bing</h3>
-        <input value="Search Here"></input>
-        <input type="submit" ng-click="searchBing()">
+        <input value="Search Here" ng-model="submitInfo"></input>
+        <input type="submit" ng-click="makeAQuery(submitInfo)" query="query">
       </div>
     
       <div ng-view=""></div>
 
     </div>
     <div ng-repeat="result in searched[0].results">
-        <div>{{result['Title']}}</div>
-        <a href="{{result['Url']}}"><div>{{result['Description']}}</div></a>
+        <div><strong>{{result['Title']}}</strong></div>
+        <div>{{result['Description']}}</div>
+        <a href="{{result['Url']}}">{{result['DisplayUrl']}}</a>
 
     </div>
 
@@ -39,6 +40,7 @@
     <script src="angular-animate/angular-animate.js"></script>
     <script src="angular-touch/angular-touch.js"></script>
     <script src="angular-route/angular-route.js"></script>
+    <script src="angular-ui-router/release/angular-ui-router.js"></script>
 
     <script src="app.js"></script>
 </body>

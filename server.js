@@ -8,6 +8,10 @@ var superagent = require('superagent');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
+//Set up body parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
 mongoose.connect('mongodb://south:south@ds027718.mongolab.com:27718/crmdb');
 
 var Query = require('./app/models/query.js');
@@ -37,6 +41,7 @@ var request = require('request').defaults({
 app.use(express.static(path.join(__dirname, '/views')));
 app.use(express.static(__dirname + '/app'));
 app.use(express.static(__dirname + '/bower_components'));
+app.use(express.static(__dirname + '/views'));
 
 
 //set up superagent
@@ -83,11 +88,14 @@ router.use(function(req, res, next) {
 //Set up route for opening page
 router.route('/')
     .get(function(req, res){
-        response.status(200).render("index.html");
-        Query.find(function(error, data){
-          if(error){console.log('error');}
-          res.status(200).json(data);
-        });
+      response.status(200).render("index.html");
+      Query.find(function(error, data){
+        if(error){console.log('error');}
+        res.status(200).json(data);
+      });
+    })
+    .post(function(req, res){
+      console.log(req.body.query);
     });
 
 //Route for API endpoint
@@ -99,6 +107,10 @@ apiRouter.route('/')
       if(error){console.log('error');}
       res.json(data);
     });
+  })
+  .post(function(req, res){
+    console.log(req.body.query);
+    var newQuery = new Query();
   });
 
 
