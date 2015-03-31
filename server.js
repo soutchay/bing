@@ -47,28 +47,28 @@ app.use(express.static(__dirname + '/views'));
 //set up superagent
 var queryArray = [];
 //hard coded query
-var query = "'cats'";
+// var query = "'cats'";
 //"https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=%27cats%27&$format=json"
-superagent.get("https://api.datamarket.azure.com/Bing/Search/v1/Web?")
-  .query({Query: query})
-  .query({$format: "json"})
-  // .set('Authorization', 'Basic OmhLQTBmaTMzaVlGVnhZNGJxYUFFNkVPdHNqV3Q5VWx1dTU1NlpwZFU5U2M=')
-  .end(function(res){
-    if (res.ok){
-      queryArray = res.body.d.results;
-      var search = new Query();
-      search.query = query;
-      search.results = queryArray;
-      search.save();
-      console.log(search);
-    }
-    else{
-      console.log('error');
-    }
-  });
+// superagent.get("https://api.datamarket.azure.com/Bing/Search/v1/Web?")
+//   .query({Query: query})
+//   .query({$format: "json"})
+//   // .set('Authorization', 'Basic OmhLQTBmaTMzaVlGVnhZNGJxYUFFNkVPdHNqV3Q5VWx1dTU1NlpwZFU5U2M=')
+//   .end(function(res){
+//     if (res.ok){
+//       queryArray = res.body.d.results;
+//       var search = new Query();
+//       search.query = query;
+//       search.results = queryArray;
+//       search.save();
+//       console.log(search);
+//     }
+//     else{
+//       console.log('error');
+//     }
+//   });
 
 
-var bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=" + query + "&$format=json";
+// var bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=" + query + "&$format=json";
 
 
 
@@ -110,7 +110,25 @@ apiRouter.route('/')
   })
   .post(function(req, res){
     console.log(req.body.query);
-    var newQuery = new Query();
+    var query = "'" + req.body.query + "'";
+    superagent.get("https://api.datamarket.azure.com/Bing/Search/v1/Web?")
+      .query({Query: query})
+      .query({$format: "json"})
+      .set('Authorization', 'Basic OmhLQTBmaTMzaVlGVnhZNGJxYUFFNkVPdHNqV3Q5VWx1dTU1NlpwZFU5U2M=')
+      .end(function(res){
+        console.log(res.body);
+        if (res.ok){
+          queryArray = res.body.d.results;
+          var search = new Query();
+          search.query = query;
+          search.results = queryArray;
+          search.save();
+          console.log(search);
+        }
+        else{
+          console.log('error');
+        }
+      });
   });
 
 
