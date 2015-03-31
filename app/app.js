@@ -1,17 +1,19 @@
 angular.module("myApp", ['ngRoute', 'ui.router'])
 .controller("MyController", function($scope, api, $stateParams){
-    $scope.searchBing = function(search){
-        console.log('searching..', $scope.submitInfo);
-    };
     api.getQuery()
         .then(function(data){
             console.log(data.data);
-            $scope.searched = data.data;
         });
+    //Unneeded stuff below
     $scope.testParams = $stateParams.searchQuery;
     console.log($scope.testParams);
     $scope.makeAQuery = function(search){
         api.createQuery(search);
+        api.getQuery()
+            .then(function(data){
+                console.log(data.data[data.length-1]);
+                $scope.searched = data.data;
+            });
     };
 })
 .service('api', ['$http', function($http){

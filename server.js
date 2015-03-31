@@ -45,7 +45,7 @@ app.use(express.static(__dirname + '/views'));
 
 
 //set up superagent
-var queryArray = [];
+
 //hard coded query
 // var query = "'cats'";
 //"https://api.datamarket.azure.com/Bing/Search/v1/Web?Query=%27cats%27&$format=json"
